@@ -3,6 +3,7 @@
 const express = require('express');
 const ExpressError = require('../expressError');
 const db = require('../db');
+const slugify = require('slugify');
 
 let router = new express.Router();
 
@@ -34,6 +35,18 @@ router.get('/:code', async function (req, res, next) {
       [code]
     );
 
+    const industryResult = await db.query(
+      `SELECT c.name, 
+      i.name 
+      FROM comp_ind AS ci 
+      LEFT JOIN companies AS c ON (ci.comp_code = c.code) 
+      LEFT JOIN industries AS i ON (ci.ind_code = i.code) 
+      WHERE comp_code = $1`,
+      [code]
+    );
+
+    console.log(industryResult);
+
     const invoiceResult = await db.query(
       `SELECT id
             FROM invoices
@@ -47,8 +60,10 @@ router.get('/:code', async function (req, res, next) {
 
     const company = companyResult.rows[0];
     const invoices = invoiceResult.rows;
+    const industry = industryResult.rows;
 
     company.invoices = invoices.map((inv) => inv.id);
+    company.industry = industry.map((ind) => ind.name);
 
     return res.json({ company: company });
   } catch (e) {
@@ -61,6 +76,12 @@ router.get('/:code', async function (req, res, next) {
 router.post('/', async function (req, res, next) {
   try {
     let { code, name, description } = req.body;
+    console.log(code);
+    if (!code) {
+      code = slugify(name, { lower: true });
+    }
+    console.log(code);
+
     const result = await db.query(
       `INSERT INTO companies (code, name, description)
             VALUES ($1, $2, $3)
