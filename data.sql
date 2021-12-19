@@ -1,4 +1,4 @@
-\c biztime
+\c biztime_test
 
 DROP TABLE IF EXISTS invoices;
 DROP TABLE IF EXISTS companies;
@@ -33,7 +33,8 @@ CREATE TABLE comp_ind (
 
 INSERT INTO companies
   VALUES ('apple', 'Apple Computer', 'Maker of OSX.'),
-         ('ibm', 'IBM', 'Big blue.');
+         ('ibm', 'IBM', 'Big blue.'),
+         ('azn', 'Amazon', 'A-Z website');
 
 INSERT INTO invoices (comp_Code, amt, paid, paid_date)
   VALUES ('apple', 100, false, null),
@@ -43,10 +44,14 @@ INSERT INTO invoices (comp_Code, amt, paid, paid_date)
 
 INSERT INTO industries (code, name)
   VALUES  ('ele', 'Electronics'),
-          ('store', 'store');
+          ('store', 'store'),
+          ('books', 'books');
 
 INSERT INTO comp_ind (comp_code, ind_code)
   VALUES  ('apple', 'ele'),
-          ('apple', 'store');
+          ('apple', 'store'),
+          ('azn', 'store'),
+          ('azn', 'books'),
+          ('ibm', 'ele');
           
 

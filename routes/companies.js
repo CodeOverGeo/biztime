@@ -45,8 +45,6 @@ router.get('/:code', async function (req, res, next) {
       [code]
     );
 
-    console.log(industryResult);
-
     const invoiceResult = await db.query(
       `SELECT id
             FROM invoices
@@ -76,11 +74,9 @@ router.get('/:code', async function (req, res, next) {
 router.post('/', async function (req, res, next) {
   try {
     let { code, name, description } = req.body;
-    console.log(code);
     if (!code) {
       code = slugify(name, { lower: true });
     }
-    console.log(code);
 
     const result = await db.query(
       `INSERT INTO companies (code, name, description)
